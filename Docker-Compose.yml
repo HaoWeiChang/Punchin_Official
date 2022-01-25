@@ -1,0 +1,16 @@
+version: "3.8"
+services:
+  flask:
+    build: ./flask
+    container_name: punchin_server
+    expose:
+      - 5000
+
+  nginx:
+    build: ./nginx
+    container_name: punchin_nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - flask
