@@ -1,7 +1,10 @@
 import os
 from flask import Flask, request, abort
 from dotenv import load_dotenv
-from controller import *
+from controller import (
+    SendGetoffTime,
+    Undefined_Func
+)
 from linebot import (
     LineBotApi, WebhookHandler
 )
@@ -9,7 +12,7 @@ from linebot.exceptions import (
     InvalidSignatureError
 )
 from linebot.models import (
-    MessageEvent, TextMessage, TextSendMessage,
+    MessageEvent, TextMessage
 )
 
 
@@ -17,7 +20,7 @@ load_dotenv()
 
 app = Flask(__name__)
 
-
+print(os.getenv('LINE_BOT_TOKEN'), os.getenv('LINE_BOT_SECRET'))
 line_bot_api = LineBotApi(os.getenv('LINE_BOT_TOKEN'))
 handler = WebhookHandler(os.getenv('LINE_BOT_SECRET'))
 
@@ -40,18 +43,20 @@ def callback():
     return 'OK'
 
 
-
 @handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     dict = {
-        '上班！!':SendGetoffTime
+        '上班！!': SendGetoffTime
     }
     if event.message.text not in dict:
-        Undefined_Func(event)
-    else : 
-        dict.get(event.message.text,None)(event)
-    # dict_to_func[event.message.text](event)
+        text_message = Undefined_Func(event)
+    else:
+        text_message = dict.get(event.message.text, None)(event)
 
+    line_bot_api.reply_message(
+        event.reply_token,
+        text_message
+    )
 
 
 if __name__ == "__main__":

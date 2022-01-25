@@ -1,15 +1,9 @@
-import os
 import random
 from time_format import time_format
-from linebot import (
-    LineBotApi, WebhookHandler
-)
 from linebot.models import (
-    MessageEvent, TextMessage, TextSendMessage,
+    TextSendMessage,
 )
 
-line_bot_api = LineBotApi(os.getenv('LINE_BOT_TOKEN'))
-handler = WebhookHandler(os.getenv('LINE_BOT_SECRET'))
 
 def SendGetoffTime(event):
     emoji = [
@@ -25,15 +19,13 @@ def SendGetoffTime(event):
         }
     ]
     punchin, getoff = time_format(event.timestamp)
-    reply_str ='$成功打卡$\n上班時間 : {}\n下班時間 : {}'.format(punchin,getoff)
-    text_message = TextSendMessage(text=reply_str,emojis=emoji)
-    line_bot_api.reply_message(
-        event.reply_token,
-        text_message
-    )
-    
+    reply_str = '$成功打卡$\n上班時間 : {}\n下班時間 : {}'.format(punchin, getoff)
+    text_message = TextSendMessage(text=reply_str, emojis=emoji)
+    return text_message
+
+
 def Undefined_Func(event):
-    rnd = random.randint(0,5)
+    rnd = random.randint(0, 5)
     msg = [
         "我只會顯示上班跟下班時間",
         "來聽首音樂吧\nhttps://www.youtube.com/watch?v=DbXMjAYSa68",
@@ -42,7 +34,5 @@ def Undefined_Func(event):
         "要下班了嗎？",
         "小知識 :\n除了上下班回覆,其他都是罐頭訊息"
     ]
-    line_bot_api.reply_message(
-        event.reply_token,
-        TextSendMessage(text=msg[rnd])
-    )
+    text_message = TextSendMessage(text=msg[rnd])
+    return text_message

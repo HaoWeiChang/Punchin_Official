@@ -2,15 +2,14 @@ FROM python:3
 
 WORKDIR /usr/src/app
 
-COPY requirement.txt ./
+COPY requirement.txt /usr/src/app
 RUN pip install --no-cache-dir -r requirement.txt
+COPY . /usr/src/app
+CMD [ "python", "app.py" ]
+EXPOSE 5000
 
-COPY . .
-
-CMD [ "python", "./main.py" ]
-
-FROM nginx:latest as production-stage
+FROM nginx:latest
 WORKDIR /usr/src/app
 COPY nginx.conf /etc/nginx/nginx.conf
-COPY client.csr /etc/nginx/client.csr
-COPY client.key /etc/nginx/client.key
+COPY server.crt /etc/nginx/server.crt
+COPY server.key /etc/nginx/server.key
